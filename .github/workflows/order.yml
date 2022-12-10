@@ -1,0 +1,25 @@
+name: Process order
+on:
+  issues:
+    types: opened
+concurrency: 'main'
+jobs:
+  place_order:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser
+        with:
+          template-path: .github/ISSUE_TEMPLATE/example.yml
+
+      - run: echo '${{ steps.issue-parser.outputs.jsonString }}' > output.json
+
+      - run: cat output.json
+      - run: echo "${{ steps.issue-parser.outputs.issueparser_favorite_dish }}"
+      - run: echo "${{ steps.issue-parser.outputs.issueparser_favorite_color }}"
